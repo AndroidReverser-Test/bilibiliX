@@ -1,6 +1,5 @@
 package com.bili.biliquguanggao;
 
-import android.util.Log;
 
 public class StackUtils {
     public static boolean isCallingFromupdate() {

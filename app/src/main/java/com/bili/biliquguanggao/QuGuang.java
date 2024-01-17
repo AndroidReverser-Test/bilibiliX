@@ -2,7 +2,6 @@ package com.bili.biliquguanggao;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
