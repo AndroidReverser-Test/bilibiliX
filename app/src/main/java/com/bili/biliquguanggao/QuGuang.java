@@ -1,8 +1,8 @@
 package com.bili.biliquguanggao;
 
-import android.app.Application;
-import android.content.Context;
 import android.util.Log;
+import android.view.View;
+
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -10,7 +10,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class QuGuang implements IXposedHookLoadPackage {
 
-    public Context Main_context;
     public static String TAG = "xingtong";
 
     @Override
@@ -20,13 +19,6 @@ public class QuGuang implements IXposedHookLoadPackage {
             Class SourceContentClazz = XposedHelpers.findClassIfExists("com.bilibili.adcommon.basic.model.SourceContent", loadPackageParam.classLoader);
             Class FeedAdInfoClazz = XposedHelpers.findClassIfExists("com.bilibili.adcommon.basic.model.FeedAdInfo", loadPackageParam.classLoader);
 
-            XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    Main_context = (Context) param.args[0];
-                }
-            });
 
             XposedHelpers.findAndHookMethod("tv.danmaku.bili.ui.splash.ad.page.x", loadPackageParam.classLoader, "a", SplashClazz, new XC_MethodHook() {
                 @Override
@@ -64,6 +56,18 @@ public class QuGuang implements IXposedHookLoadPackage {
                     Log.d(TAG,"hook3成功");
                     param.args[0] = null;
                     super.beforeHookedMethod(param);
+                }
+            });
+
+            XposedHelpers.findAndHookConstructor("com.bilibili.pegasus.card.banner.BannerV8Card$BannerV8Holder", loadPackageParam.classLoader, android.view.View.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    View view2 = (View)param.args[0];
+                    int banid = 2131296911;
+                    View v8Banner = view2.findViewById(banid);
+                    v8Banner.setVisibility(View.GONE);
+                    Log.d(TAG,"去除banner成功");
+                    super.afterHookedMethod(param);
                 }
             });
 
