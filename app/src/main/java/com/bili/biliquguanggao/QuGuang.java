@@ -59,14 +59,14 @@ public class QuGuang implements IXposedHookLoadPackage {
                 }
             });
 
-            XposedHelpers.findAndHookConstructor("com.bilibili.pegasus.card.banner.BannerV8Card$BannerV8Holder", loadPackageParam.classLoader, android.view.View.class, new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod("android.view.View", loadPackageParam.classLoader, "findViewById", int.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    View view2 = (View)param.args[0];
-                    int banid = 2131296911;
-                    View v8Banner = view2.findViewById(banid);
-                    v8Banner.setVisibility(View.GONE);
-                    Log.d(TAG,"去除banner成功");
+                    if ((int)param.args[0] == 2131296911 || (int)param.args[0] == 2131296642){
+                        View adView = (View) param.getResult();
+                        adView.setVisibility(View.GONE);
+                        Log.d(TAG,"去除广告成功");
+                    }
                     super.afterHookedMethod(param);
                 }
             });
