@@ -20,6 +20,7 @@ public class QuGuang implements IXposedHookLoadPackage {
             Class FeedAdInfoClazz = XposedHelpers.findClassIfExists("com.bilibili.adcommon.basic.model.FeedAdInfo", loadPackageParam.classLoader);
 
 
+            //开屏广告
             XposedHelpers.findAndHookMethod("tv.danmaku.bili.ui.splash.ad.page.x", loadPackageParam.classLoader, "a", SplashClazz, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -29,6 +30,8 @@ public class QuGuang implements IXposedHookLoadPackage {
 
                 }
             });
+
+            //更新校验
             XposedHelpers.findAndHookMethod("org.json.JSONObject", loadPackageParam.classLoader, "optInt",
                     String.class, int.class, new XC_MethodHook() {
                         @Override
@@ -40,6 +43,8 @@ public class QuGuang implements IXposedHookLoadPackage {
                             super.afterHookedMethod(param);
                         }
                     });
+
+            //视频播放下面小横幅广告
             XposedHelpers.findAndHookMethod("com.bilibili.ad.adview.videodetail.b", loadPackageParam.classLoader, "a", SourceContentClazz, new XC_MethodHook() {
                 protected void afterHookedMethod(XC_MethodHook.MethodHookParam methodHookParam) throws Throwable {
                     Log.d(TAG, "layout:" + (int)methodHookParam.getResult());
@@ -50,6 +55,7 @@ public class QuGuang implements IXposedHookLoadPackage {
                 }
             });
 
+            //主页视频推广
             XposedHelpers.findAndHookMethod("com.bilibili.adcommon.basic.model.FeedItem", loadPackageParam.classLoader, "setFeedAdInfo", FeedAdInfoClazz, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -59,10 +65,11 @@ public class QuGuang implements IXposedHookLoadPackage {
                 }
             });
 
+            //主页顶部滚动横幅以及视频播放页下方创作推广
             XposedHelpers.findAndHookMethod("android.view.View", loadPackageParam.classLoader, "findViewById", int.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if ((int)param.args[0] == 2131296911 || (int)param.args[0] == 2131296642){
+                    if ((int)param.args[0] == 2131296911 || (int)param.args[0] == 2131296642 || (int)param.args[0] == 2131296637){
                         View adView = (View) param.getResult();
                         adView.setVisibility(View.GONE);
                         Log.d(TAG,"去除广告成功");
